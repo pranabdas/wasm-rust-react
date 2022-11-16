@@ -17,21 +17,22 @@ bash setup.sh
 Or create new rust lib:
 ```console
 cargo new rust-libs --lib
+cd rust-libs
 cargo add wasm-bindgen
 ```
 
-Move in to our `rust-libs` directory and build the rust libs:
-```console
-cd wasm-rust-libs
-wasm-pack build --target web
-```
-
-Notice the `Cargo.toml` spec and add rust byproducts in `.gitignore`.
+Change crate-type in `Cargo.toml` and add rust byproducts in `.gitignore`.
 ```rs
 [lib]
 crate-type = ["cdylib"]
 ```
-Run:
+
+Build the rust libs:
+```console
+wasm-pack build --target web
+```
+
+Install/add package to npm:
 ```
 npm i ./rust-libs/pkg
 ```
