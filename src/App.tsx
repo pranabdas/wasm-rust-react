@@ -1,33 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import init, { add, sub, mult } from "rust-libs";
+import { useState } from 'react';
+import { createWorkerFactory, terminate } from '@shopify/web-worker';
+const createWorker = createWorkerFactory(() => import('./worker'));
 
 function App() {
-  const [addResult, setAddResult] = useState(0);
-  const [subResult, setSubResult] = useState(0);
-  const [multResult, setMultResult] = useState(0);
+  const [isBusy, setIsBusy] = useState(false);
+  const [jsResult, setJsResult] = useState(0);
+  const [rsResult, setRsResult] = useState(0);
+  const [jsTimeTaken, setJsTimeTaken] = useState(0);
+  const [rsTimeTaken, setRsTimeTaken] = useState(0);
+  let num = 44;
 
-  let input1 = 15;
-  let input2 = 12;
-
-  useEffect(() => {
-    init().then(() => setAddResult(add(input1, input2)));
-  }, [input1, input2]);
-
-
-  const funcSub = async () => {
-    await init();
-    setSubResult(sub(input1, input2));
+  const handleClickJs = async () => {
+    const jsWorker = createWorker();
+    let t0 = performance.now();
+    const result = await jsWorker.fibjs(num);
+    const timeTaken = performance.now() - t0;
+    terminate(jsWorker);
+    setJsResult(result);
+    setJsTimeTaken(timeTaken);
+    setIsBusy(false);
   }
 
-  funcSub();
-
-  init().then(() => setMultResult(mult(input1, input2)));
+  const handleClickRs = async () => {
+    const rsWorker = createWorker();
+    let t0 = performance.now();
+    const result = await rsWorker.fibrs(num);
+    const timeTaken = performance.now() - t0;
+    terminate(rsWorker);
+    setRsResult(result);
+    setRsTimeTaken(timeTaken);
+    setIsBusy(false);
+  }
 
   return (
     <>
-      <p>{input1} + {input2} = {addResult}</p>
-      <p>{input1} - {input2} = {subResult}</p>
-      <p>{input1} * {input2} = {multResult}</p>
+      <button onClick={() => { setIsBusy(true); handleClickJs(); }}>Calculate fibjs</button>
+      <button onClick={() => { setIsBusy(true); handleClickRs(); }}>Calculate fibrs</button>
+      {isBusy && <p>Please wait. Working...</p>}
+      <p>Javascript: Fib({num}) = {jsResult} (Time taken: {jsTimeTaken} ms)</p>
+      <p>Rust: Fib({num}) = {rsResult} (Time taken: {rsTimeTaken} ms)</p>
     </>
   );
 }
