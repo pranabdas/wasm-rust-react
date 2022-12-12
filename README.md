@@ -48,6 +48,15 @@ Start development server:
 npm start
 ```
 
+Running wasm in a web worker.
+```
+npm i @shopify/web-worker
+```
+
+Currently, the shopify lib might have some [issues](
+https://github.com/Shopify/quilt/issues/2232), or my implementation is not
+correct.
+
 ### Resources
 - <https://neoquest.xyz/blog/react+rust+wasm+introduction>
 - <https://rustwasm.github.io/docs/book/>
