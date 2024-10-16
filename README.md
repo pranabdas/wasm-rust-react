@@ -4,7 +4,7 @@ You must have node (and npm) installed.
 
 ### Initialize React project
 ```console
-npx -y create-react-app wasm-rust-react --template typescript
+npx -y create vite@latest wasm-rust-react -- --template react-ts
 ```
 
 ### Install tools
@@ -14,7 +14,7 @@ Install rust related tools using the setup script:
 bash setup.sh
 ```
 
-Or create new rust lib:
+Create new rust lib:
 ```console
 cargo new rust-libs --lib
 cd rust-libs
@@ -33,7 +33,7 @@ wasm-pack build --target web
 ```
 
 Install/add package to npm:
-```
+```console
 npm i ./rust-libs/pkg
 ```
 
@@ -48,15 +48,13 @@ Start development server:
 npm start
 ```
 
-Running wasm in a web worker.
-```
-npm i @shopify/web-worker
-```
+To update rust dependencies:
 
-Currently, the shopify lib might have some [issues](
-https://github.com/Shopify/quilt/issues/2232), or my implementation is not
-correct.
+```console
+cargo install cargo-update --features vendored-openssl
+cargo install-update -a
+```
 
 ### Resources
-- <https://neoquest.xyz/blog/react+rust+wasm+introduction>
-- <https://rustwasm.github.io/docs/book/>
+
+- https://rustwasm.github.io/docs/book/
